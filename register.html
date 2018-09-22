@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Todo-Pro</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+</head>
+
+<body class="bg-light">
+
+    <div class="container">
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="img/todo.jpg" alt="" width="100" height="100">
+            <h2>Todo-Pro</h2>
+            <p class="lead">Welcome to our task manager, we help you organize your tasks so as to get them achieved.</p>
+        </div>
+        <div class="container">
+            <div id="app" class="shadow p-3  col col-md-8 offset-md-2">
+            
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+
+                            <label for="">{{fname}}</label>
+                            <input type="text" class="form-control"  v-model="fname" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">{{lname}}</label>
+                            <input type="text" class="form-control"  v-model="lname" placeholder="Last name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">{{email}}</label>
+                            <input type="email" class="form-control"  v-model="email" placeholder="Email">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">{{phone}}</label>
+                            <input type="number" class="form-control"  v-model="phone" placeholder="Phone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">Password</label>
+                            <input type="password" class="form-control"  v-model="password" placeholder="Password">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">Password Confirmation</label>
+                            <input type="password" class="form-control"  v-model="c_password"placeholder="Password Confirmation">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" type="checkbox" v-model="toggle" true-value="You have accepted our terms" false-value="Accept our terms">
+                            <label class=" form-check-label" for="gridCheck">
+                            {{toggle}}
+                            </label>
+                        </div>
+                    </div>
+                    <button  v-on:click="register" class="btn btn-primary float-right">Register</button>
+                    <p>already registered ?<a href="login.html"> click </a> to log in </p>
+                </form>
+
+                <div class="clearfix"></div>
+                <div class="alert my-3 alert-info alert-dismissible fade" v-bind:class="{ show: isActive}" role=" alert">
+                        <strong>Info!</strong> {{response}}.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                
+
+            </div>
+            
+
+        </div>
+
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">&copy; 2018 Jakomita</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="index.html">Home</a></li>
+                <li class="list-inline-item"><a href="jakomita.com">About Us</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                fname: '',
+                lname: '',
+                email: '',
+                phone: '',
+                password:'',
+                c_password:'',
+                toggle:'Accept our terms',
+                response:'',
+                isActive:false
+
+            },
+            methods: {
+                register:function(e){
+                    e.preventDefault();
+                    
+                   if(this.fname == "" || this.lname ==""|| this.email ==""|| this.phone =="" || this.password ==""){
+                       alert ('please fill all fiels');
+                   }else if(this.password !== this.c_password){
+                       alert ('Password mismatch');
+                   }else{
+                            axios.post('http://localhost:3500/api/register', {
+                                first_name: this.fname,
+                                last_name: this.lname,
+                                email:this.email,
+                                phone:this.phone,
+                                password:this.password
+                            })
+                            .then( (response)=> {
+                                this.isActive=true
+                                this.response = response.data.message
+                            })
+                            .catch(function (error) {
+                                this.isActive=true
+                                this.response = error.data.message
+                            });
+                   }
+                }
+            }
+            
+  
+           
+        })
+    </script>
+
+
+
+</body>
+
+</html>

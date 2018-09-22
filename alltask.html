@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Todo-Pro</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
+</head>
+
+<body class="bg-light">
+
+    <div id="app" class="container">
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="img/todo.jpg" alt="" width="100" height="100">
+            <h2>Todo-Pro</h2>
+            <p class="lead">Welcome to our task manager, we help you organize your tasks so as to get them achieved.</p>
+        </div>
+            
+            <div class="shadow p-3 mb-5  col col-md-10 offset-md-1">
+                <p>{{name}} Tasks!</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th scope="col">Task</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Deadline</th>
+                            <th scope="col">Grade</th>
+                            <th scope="col">Mark as Complete</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="task in tasks">
+                            <td scope="row">{{task.task_name}}</td>
+                            <td>{{task.description}}</td>
+                            <td>{{task.status}}</td>
+                            <td>{{task.deadline}}</td>
+                            <td>{{task.grade}}</td>
+                            <td><button  v-on:click="complete(task._id)" class="btn btn-sm btn-success">Complete</button></td>
+                            <td><button  v-on:click="deleten(task._id)"  class="btn btn-sm btn-danger">Delete</button></td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+       
+
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">&copy; 2018 Jakomita</p>
+            <ul class="list-inline">
+                 <li class="list-inline-item"><a href="index.html">Home</a></li>
+                <li class="list-inline-item"><a href="jakomita.com">About Us</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            tasks: [],
+            isActive: false,
+            name: "",
+            email: ""
+
+        },
+        methods: {
+            deleten:function(e){
+                axios.get('http://localhost:3500/api/delete-todo/'+e)
+                .then((response) => {
+                    // handle success
+                    alert("Todo Deleted")
+                                    
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+            },
+            complete:function(e){
+                 axios.post('http://localhost:3500/api/update-todo/', 
+                        {        
+                            id: e
+                        })
+                .then((response) => {
+                    // handle success
+                    alert("Todo Status Successfully Changed")
+                    
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+            }
+        },
+       created() {
+            // Make a request to test the end point
+            axios.get('http://localhost:3500')
+                .then((response) => {
+                    // handle success
+                    this.name = response.data.user.first_name;
+                    this.email = response.data.user.email;
+                    let owner = response.data.user.email;
+                    console.log(owner)
+                        axios.get('http://localhost:3500/api/view-todos/'+owner)
+                        .then((response) => {
+                            // handle success
+                            this.tasks = response.data.todo;
+                           
+                        })
+                        .catch((error) => {
+                            // handle error
+                            console.log(error);
+                        })
+
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+
+
+
+    })
+</script>
+
+
+</body>
+
+</html>
