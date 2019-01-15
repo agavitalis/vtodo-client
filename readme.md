@@ -1,3 +1,6 @@
+## TODO CLIENT
+This application is the front end side that consumes the APIs created in vtodo-client
+
 
 ## Running locally
 To run this program, you have to serve this folder with a server of choice
